@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
-#include "hidkeys.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,54 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0; i < 40; i++) {
         leftKeyStat[i] = 0;
     }
-    for (int i = 0; i < 10; i++) {
-        keyCategories cat;
-        cat.name = keyCategory[i];
-        keyCat.append(cat);
-    }
-    for (int i = 4; i <= 29; i++)
-        keyCat[0].indexes.append(i);
-    for (int i = 30; i <= 39; i++)
-        keyCat[1].indexes.append(i);
-    for (int i = 40; i <= 44; i++)
-        keyCat[2].indexes.append(i);
-    keyCat[2].indexes.append(57);
-    for (int i = 70; i <= 83; i++)
-        keyCat[2].indexes.append(i);
-    keyCat[2].indexes.append(101);
-    keyCat[2].indexes.append(102);
-    for (int i = 116; i <= 132; i++)
-        keyCat[2].indexes.append(i);
-    for (int i = 153; i <= 164; i++)
-        keyCat[2].indexes.append(i);
-    for (int i = 45; i <= 56; i++)
-        keyCat[3].indexes.append(i);
-    keyCat[3].indexes.append(100);
-    for (int i = 178; i <= 181; i++)
-        keyCat[3].indexes.append(i);
-    for (int i = 58; i <= 69; i++)
-        keyCat[4].indexes.append(i);
-    for (int i = 104; i <= 115; i++)//58-69,104-115
-        keyCat[4].indexes.append(i);
-    for (int i = 135; i <= 152; i++)//135-152
-        keyCat[5].indexes.append(i);
-    for (int i = 224; i <= 231; i++)//224-231
-        keyCat[6].indexes.append(i);
-    for (int i = 232; i <= 244; i++)//232-244, 248-251
-        keyCat[7].indexes.append(i);
-    for (int i = 248; i <= 251; i++)
-        keyCat[7].indexes.append(i);
-    for (int i = 84; i <= 99; i++)//84-99,103,133,134,176,177,182-221
-        keyCat[8].indexes.append(i);
-    keyCat[8].indexes.append(103);
-    keyCat[8].indexes.append(133);
-    keyCat[8].indexes.append(134);
-    keyCat[8].indexes.append(176);
-    keyCat[8].indexes.append(177);
-    for (int i = 182; i <= 221; i++)
-        keyCat[8].indexes.append(i);
-    for (int i = 252; i <= 255; i++)//252-255
-        keyCat[9].indexes.append(i);
+
     delayReadKeyPos = 0;
     delayReadKeyMap = 0;
     delayReadKeySet = 0;
@@ -294,18 +246,15 @@ void MainWindow::updateStateEvent() {
     if (len) {
         if ((buf[0] == 0x50)||(buf[0] == 0x70)) {
             int k = 0;
-            qDebug() << buf[1] << buf[2] << buf[3] << buf[4] << buf[5] << buf[6] << buf[7];
             if (buf[0] == 0x50) ui->comboBox->setCurrentIndex(1);
             else ui->comboBox->setCurrentIndex(0);
             for(int i = 0; i < 5; i++) {
                 for (int j = 0; j < 8; j++) {
                    if (buf[i+1] & (1 << j)) {
-                       rightSideList[k]->setChecked(true);
-                       rightSideList[k]->setCheckable(true);
+                       rightSideList[k]->setStyleSheet(QString("background:#0080EF;"));
                    }
                    else {
-                       rightSideList[k]->setChecked(false);
-                       rightSideList[k]->setCheckable(false);
+                       rightSideList[k]->setStyleSheet(QString());
                    }
                    k++;
                 }
@@ -326,13 +275,13 @@ void MainWindow::keyClicked() {
     menu.addMenu(&key);
     menu.addMenu(&mod);
     QList<QMenu*> cats;
-    for (int i = 0; i < keyCat.count(); i++) {
-        cats.append(new QMenu(keyCat[i].name, &key));
+    for (int i = 0; i < keyCat.keyCategory().count(); i++) {
+        cats.append(new QMenu(keyCat.keyCategory()[i].name, &key));
         key.addMenu(cats[i]);
-        for (int j = 0; j < keyCat[i].indexes.count(); j++) {
+        for (int j = 0; j < keyCat.keyCategory()[i].indexes.count(); j++) {
             QVariant v;
-            QAction *a = cats[i]->addAction(keyNames[keyCat[i].indexes.at(j)]);
-            v = keyCat[i].indexes.at(j);
+            QAction *a = cats[i]->addAction(keyCat.keyName(i, j));
+            v = keyCat.keyCategory()[i].indexes.at(j);
             a->setData(v);
         }
     }
@@ -490,7 +439,7 @@ QString MainWindow::keyModText(int index) {
 }
 
 QString MainWindow::keyText(int index) {
-    return keyModText(index)+keyNames[rightKeymap[ui->comboBox->currentIndex()*2][index]];
+    return keyModText(index)+keyCat.keyName(rightKeymap[ui->comboBox->currentIndex()*2][index]);
 }
 
 void MainWindow::on_autoReadStateBtn_clicked()
@@ -503,8 +452,7 @@ void MainWindow::on_autoReadStateBtn_clicked()
     else {
         updateStateTimer.stop();
         for(int i = 0; i < rightSideList.count(); i++) {
-            rightSideList[i]->setChecked(false);
-            rightSideList[i]->setCheckable(false);
+            rightSideList[i]->setStyleSheet(QString());
         }
     }
 }

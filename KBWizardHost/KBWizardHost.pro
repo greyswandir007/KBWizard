@@ -9,7 +9,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    kbwizardhid.cpp
+    kbwizardhid.cpp \
+    buttonset.cpp \
+    keycategoryset.cpp
 
 win32:SOURCES += hid.c
 linux:!android{
@@ -21,9 +23,12 @@ android: SOURCES += hid_libusb.c
 HEADERS  += mainwindow.h \
     hidapi.h \
     kbwizardhid.h \
-    hidkeys.h
+    hidkeys.h \
+    buttonset.h \
+    keycategoryset.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    buttonset.ui
 
 win32:LIBS += -lhid -lsetupapi
 unix:LIBS += -lusb

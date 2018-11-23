@@ -17,14 +17,8 @@ bool KBWizardHID::open()
         info = hid_enumerate(vid, pid);
         if (info) {
             qDebug() << info->product_string << info->path << info->interface_number << info->serial_number;
-            while(info->next&&(info->interface_number != 3)) {
-                qDebug() << info->product_string << info->path << info->interface_number << info->serial_number;
-                info = info->next;
-            }
-            if (info&&info->interface_number == 3) {
-                qDebug() << info->product_string << info->path << info->interface_number << info->serial_number;
-                kbDevice = hid_open_path(info->path);
-            }
+            while(info->next&&(info->interface_number != 3)) info = info->next;
+            if (info&&info->interface_number == 3) kbDevice = hid_open_path(info->path);
         }
         if (kbDevice) opened = true;
     }
