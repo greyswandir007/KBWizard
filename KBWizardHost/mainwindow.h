@@ -44,6 +44,10 @@ private slots:
     void on_comboBox_currentIndexChanged(int index);
     void on_autoReadStateBtn_clicked();
 
+    void on_sendCmdButton_clicked();
+
+    void on_readStatButton2_clicked();
+
 private:
     QString keyModText(int index);
     QString keyText(int index);

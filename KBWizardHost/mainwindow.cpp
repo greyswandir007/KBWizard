@@ -508,3 +508,19 @@ void MainWindow::on_autoReadStateBtn_clicked()
         }
     }
 }
+
+void MainWindow::on_sendCmdButton_clicked()
+{
+    unsigned char buf[32];
+    for (int i = 0; i < 9; i++) buf[i] = 0;
+    buf[1] = ui->sendCmdBox->value();//Sensor work type
+    kbDevice.sendData(buf,9);
+}
+
+void MainWindow::on_readStatButton2_clicked()
+{
+    unsigned char buf[32];
+    for (int i = 0; i < 9; i++) buf[i] = 0;
+    buf[2] = 1;
+    kbDevice.sendData(buf,9);
+}
