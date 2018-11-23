@@ -41,3 +41,15 @@ target_wrapper.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
+obj
+build-*
+*.layout
+*.map
+*.eep
+*.hex
+*.elf
+*.bin
+*.sym
+*.lss
+LUFA
+
