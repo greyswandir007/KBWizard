@@ -9,6 +9,18 @@
 #define FN_KEY_MAP 2
 #define FN_KEY_MOD 3
 
+#define NONHID_MACROS0 0xA5
+#define NONHID_MACROS1 0xA6
+#define NONHID_MACROS2 0xA7
+#define NONHID_MACROS3 0xA8
+#define NONHID_MACROS4 0xA9
+#define NONHID_MACROS5 0xAA
+#define NONHID_MACROS6 0xAB
+#define NONHID_MACROS7 0xAC
+#define NONHID_MACROS8 0xAD
+#define NONHID_MACROS9 0xAE
+#define NONHID_START_STOP_MACROS_RECORD 0xAF
+
 #define NONHID_CHANGE_LANG			0xDE
 #define NONHID_CHANGE_KEYMAP			0xDF
 #define NONHID_KEYBOARD_SC_MAIL			0xEC
@@ -31,10 +43,10 @@
 //0xEC - Mail
 //0xF5 - Mouse LBtn
 //0xF6 - Mouse RBtn
-//0xF7 - MOuse MBtn
+//0xF7 - Mouse MBtn
 //0xFC - WWW Favorite
 //0xFD - Wake
-
+//0xFE - Block keyboard
 //0xFF - Fn
 
 #endif //KEYMAP_COMMON

@@ -13,8 +13,8 @@
 #else
 #define KEYBOARD_STATUS 0x52
 #endif
-//SendData for USB
-unsigned char sendData[HID_GENERIC_EPSIZE]={0x4B,0x42,0x57,KEYBOARD_STATUS,0,0,0,0};
+// SendData for USB
+unsigned char sendData[HID_GENERIC_EPSIZE]= {0x4B, 0x42, 0x57, KEYBOARD_STATUS, 0, 0, 0, 0};
 unsigned char mainEEWriteBuffer[200];
 unsigned short mainEEAddressBuffer[200];
 char requestedValue = 0;
@@ -82,8 +82,8 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 			}
 			break;
 		case KBW_GET_EEPROM_KB_KEY://4 byte at time
-			if ((DataArray[1] < 10)&&(DataArray[2] < 4)&&(DataArray[3]<37)) {
-				if (startEERead(128+DataArray[1]*160+DataArray[2]*40+DataArray[3], 4, READ_KEYSET_PART)) {
+			if ((DataArray[1] < 10) && (DataArray[2] < 4) && (DataArray[3] < 37)) {
+				if (startEERead(128 + DataArray[1] * 160 + DataArray[2] * 40 + DataArray[3], 4, READ_KEYSET_PART)) {
 					sendData[0] = 0x52;
 					sendData[1] = DataArray[1];
 					sendData[2] = DataArray[2];
@@ -200,16 +200,14 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 					sendData[1] = DataArray[1];
 					sendData[2] = 0;
 					sendData[3] = 0;
-				}
-				else {
+				} else {
 					sendData[0] = 0x42;
 					sendData[1] = 0xFF;
 					sendData[2] = 0xFF;
 					sendData[3] = 0xFF;
 					dataReady = 1;
 				}
-			}
-			else {
+			} else {
 				sendData[0] = 0x45;
 			}
 			dataReady = 1;
@@ -238,16 +236,14 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 						if (DataArray[2] == 0) updateNmKey(DataArray[4], DataArray[5], DataArray[3]);
 						else updateFnKey(DataArray[4], DataArray[5], DataArray[3]);
 					}
-				}
-				else {
+				} else {
 					sendData[0] = 0x42;
 					sendData[1] = 0xFF;
 					sendData[2] = 0xFF;
 					sendData[3] = 0xFF;
 					dataReady = 1;
 				}
-			}
-			else {
+			} else {
 				sendData[0] = 0x45;
 				dataReady = 1;
 			}
@@ -276,8 +272,7 @@ void CreateGenericHIDReport(uint8_t* DataArray) {
 		for (int i = 0; i < HID_GENERIC_EPSIZE; i++) {
 			DataArray[i] = sendData[i];
 		}
-	}
-	else {
+	} else {
 		DataArray[0] = 0xFF;
 		DataArray[1] = 0xFF;
 		DataArray[2] = 0xFF;
@@ -438,8 +433,7 @@ void writeEEPROMData (void) {
 			bytesToWriteLeft--;
 			currentWriteIndex++;
 		}
-	}
-	else if (!dataReady&&waitForWrite) {
+	} else if (!dataReady&&waitForWrite) {
 		waitForWrite = 0;
 		dataReady = 1;
 	}

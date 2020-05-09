@@ -181,18 +181,18 @@ QString keyNames[] ={
 "OPER",//
 "CLEAR_AND_AGAIN",//
 "CRSEL_AND_PROPS",//
-"EXSEL",//
-"",//165
-"",//166
-"",//167
-"",//168
-"",//169
-"",//170
-"",//171
-"",//172
-"",//173
-"",//174
-"",//175
+"EXCEL",//
+"Macro 0",//165//NON HID
+"Macro 1",//166//NON HID
+"Macro 2",//167//NON HID
+"Macro 3",//168//NON HID
+"Macro 4",//169//NON HID
+"Macro 5",//170//NON HID
+"Macro 6",//171//NON HID
+"Macro 7",//172//NON HID
+"Macro 8",//173//NON HID
+"Macro 9",//174//NON HID
+"Macro Rec",//175//NON HID
 "KEYPAD_00",//
 "KEYPAD_000",//
 "THOUSANDS_SEPARATOR",//
@@ -239,8 +239,8 @@ QString keyNames[] ={
 "KEYPAD_OCTAL",//
 "KEYPAD_DECIMAL",//
 "KEYPAD_HEXADECIMAL",//
-"",//222
-"",//223
+"Change Lang",//222
+"Change Keymap",//223
 "LCTRL",//
 "LSHIFT",//
 "LALT",//
@@ -253,7 +253,7 @@ QString keyNames[] ={
 "MEDIA_STOP",//
 "MEDIA_PREVIOUS_TRACK",//
 "MEDIA_NEXT_TRACK",//
-"MEDIA_EJECT",//
+"SC Mail",//236//NON HID
 "MEDIA_VOL_UP",//
 "MEDIA_VOL_DOWN",//
 "MEDIA_MUTE",//
@@ -262,17 +262,17 @@ QString keyNames[] ={
 "MEDIA_FORWARD",//
 "MEDIA_CANCEL",//
 "MEDIA_SEARCH",//
-"",//245
-"",//246
-"",//247
+"Mouse Left",//245
+"Mouse Right",//246
+"Mouse Middle",//247
 "MEDIA_SLEEP",//
 "MEDIA_LOCK",//
 "MEDIA_RELOAD",//
 "MEDIA_CALCULATOR",//
-"Keymap",//252
-"Ch lang",//253
-"Mouse",//254
-"Fn"//255
+"WWW Facorite",//252//NON HID
+"Wake",//253//NON HID
+"Block Key",//254//NON HID
+"Fn"//255//NON HID
 };
 
 #endif // HIDKEYS_H

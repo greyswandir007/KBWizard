@@ -54,18 +54,7 @@ int KBWizardHID::sendData(unsigned char *buffer, int len)
     int slen = 0;
     if (kbDevice) {
         slen = hid_write(kbDevice, (unsigned char*)buffer, len);
-        //if(slen != len) {
-        //    qDebug() << "Failed: bulk transfer for write failed";
-        //}
-        //else {
-        //    result = true;
-        //}
-        //const wchar_t *err = hid_error(kbDevice);
-        //if (err)
-        //    qDebug() << QString::fromStdWString(err);
-        //qDebug() << "write length" << slen;
     }
-    //return result;
     return slen;
 }
 

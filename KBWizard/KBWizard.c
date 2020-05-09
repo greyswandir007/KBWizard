@@ -47,10 +47,8 @@ void SetupHardware(void) {//Configures the board hardware and chip peripherals f
 	USB_Init();
 }
 void EVENT_USB_Device_Connect(void) { //On connect
-	//LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING); /* Indicate USB enumerating */
 }
 void EVENT_USB_Device_Disconnect(void) { //On disconnect
-	//LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);/* Indicate USB not ready */
 }
 void EVENT_USB_Device_ConfigurationChanged(void) {
 	bool ConfigSuccess = true;
@@ -86,7 +84,7 @@ void EVENT_USB_Device_ControlRequest(void) {
 					ReportData = getMSReportData();
 					ReportSize = getMSReportSize();
 				}
-				else  if (USB_ControlRequest.wIndex == INTERFACE_ID_Consumer) {
+				else if (USB_ControlRequest.wIndex == INTERFACE_ID_Consumer) {
 					ReportData = getConsReportData();
 					ReportSize = getConsReportSize();
 				}

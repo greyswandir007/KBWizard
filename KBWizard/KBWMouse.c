@@ -5,13 +5,13 @@
 #include "KBWSettings.h"
 #include "KBWKeyboard.h"
 #define MOUSESSPIN 4
-typedef struct{
+typedef struct {
 	uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
 	int8_t  X; /**< Current delta X movement of the mouse. */
 	int8_t  Y; /**< Current delta Y movement on the mouse. */
 	int8_t  wheelY; /**< Current delta X wheel movement of the mouse. */
 	int8_t  wheelX; /**< Current delta Y wheel movement on the mouse. */
-}ATTR_PACKED USB_MouseReport_Data_Wheel_t;
+} ATTR_PACKED USB_MouseReport_Data_Wheel_t;
 static USB_MouseReport_Data_Wheel_t MouseReportData; /** Global structure to hold the current mouse interface HID report, for transmission to the host */
 char sensorAttached = 0;
 //Mouse Global variables
@@ -24,23 +24,18 @@ unsigned char sensorWorkType = 0;
 
 void initMouse(void) {
 	SPCR = 0b01011101; //7 - Interrupt disabled,  6 - SPI ON, 5 - MSB, 4 - Master, 3 - Clock polarity 1, 2 - Falling, 0-1 - 1Mhz (f/16)
-	//char resolution = getInitialSensorResolution();
-	//sensorWorkType = getInitialSensorWorkType();
-	//if (resolution == 0) resolution = 8;
 	char dev = ReadSensorValue(0x00);
 	char rev = ReadSensorValue(0x01);
 	mouseDeviceId = dev;
 	if (dev == 0x12) {
-		if ((rev>=0x01)&&(rev <= 0x08)) {
+		if ((rev >= 0x01) && (rev <= 0x08)) {
 			sensorAttached = 1;
-			//SetSensorResolution(resolution);
 		}
 	}
 	memset(&MouseReportData, 0, sizeof(MouseReportData)); //Clear the report data
 }
 
 uint8_t getModifierForMouse(void){
-
 	uint8_t mod = 0;
 	if ((mouseOffsetX != 0)||(mouseOffsetY != 0)) mod = sensorWorkType >> 4;
 	return mod;
@@ -79,10 +74,10 @@ void Mouse_HID_Task(void) { //Generates the next mouse HID report for the host
 		MouseReportData.X = mouseOffsetX;
 		MouseReportData.Y = mouseOffsetY;
 	}
-	Endpoint_SelectEndpoint(MOUSE_IN_EPADDR); //Select the Mouse Report Endpoint
-	if (Endpoint_IsReadWriteAllowed()) { //Check if Mouse Endpoint Ready for Read/Write
+	Endpoint_SelectEndpoint(MOUSE_IN_EPADDR); // Select the Mouse Report Endpoint
+	if (Endpoint_IsReadWriteAllowed()) { // Check if Mouse Endpoint Ready for Read/Write
 		Endpoint_Write_Stream_LE(&MouseReportData, sizeof(MouseReportData), NULL); //Write Mouse Report Data
-		Endpoint_ClearIN(); //Finalize the stream transfer to send the last packet
+		Endpoint_ClearIN(); // Finalize the stream transfer to send the last packet
 		memset(&MouseReportData, 0, sizeof(MouseReportData)); //Clear the report data afterwards
 		mouseOffsetX = 0;
 		mouseOffsetY = 0;
@@ -136,7 +131,7 @@ void WriteSensorValue(char adr, char value) {
 }
 
 void SetSensorResolution (unsigned char res) {
-	if ((res >= 1)&&(res <= 11)&&(sensorResolution != res)) {
+	if ((res >= 1) && (res <= 11) && (sensorResolution != res)) {
 		res = res & 0x0F;
 		sensorResolution = res;
 		res = res | 0x10;
@@ -144,4 +139,3 @@ void SetSensorResolution (unsigned char res) {
 		setInitialSensorResolution(sensorResolution);
 	}
 }
-

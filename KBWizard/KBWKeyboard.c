@@ -81,7 +81,6 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 						//40//www forward		HID_KEYBOARD_SC_MEDIA_FORWARD                     0xF2
 						//80//www back			HID_KEYBOARD_SC_MEDIA_BACKWARD                    0xF1
 
-
 						//01//Sleep				HID_KEYBOARD_SC_MEDIA_SLEEP                       0xF8
 						//02//Wake				0xFD
 					}
@@ -90,13 +89,12 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 						keyPressModifier |= mod[j];
 						countKeyPressed++;
 					}
-                                        if (map[j] == NONHID_BLOCK_KEYBOARD) {
+					if (map[j] == NONHID_BLOCK_KEYBOARD) {
 						blockKeyPressed = 1;
 						isBlockKeyPressed = 1;
 					}
 					kpStatPress[j] = 1;
-				}
-				else if (kpStatPress[j]) {
+				} else if (kpStatPress[j]) {
 					kpStatPress[j] = 0;
 					kpStatImidiate[j]++;
 					kpStat[j]++;
@@ -154,7 +152,6 @@ void scanKeyPressed() {
 	btn[0] = PINA; btn[1] = PINC; btn[2] = PINE; btn[3] = PINF;
         btn[4] = PIND;
         btn[4] = btn[4] & 0x13 | ((btn[4] & 0xC0) << 4) | (PINB & 0xE0);
-	//btnB = (btnB >> 4) | (btnD & 0xC) | ((btnD & 0x3)<<4);
 	for (int i = 0; i < 5; i++) {
 		btn [i] = ~btn[i];
 		pressedButtons [i] = btn[i];
@@ -173,15 +170,6 @@ void scanKeyPressed() {
 }
 
 void Keyboard_ProcessLEDReport(const uint8_t LEDStatus) {// Processes a given Keyboard LED report from the host, and sets the board LEDs to match.
-	/*uint8_t LEDMask = LEDS_LED2;
-	if (LEDStatus & HID_KEYBOARD_LED_NUMLOCK)
-		LEDMask |= LEDS_LED1;
-	if (LEDStatus & HID_KEYBOARD_LED_CAPSLOCK)
-		LEDMask |= LEDS_LED3;
-	if (LEDStatus & HID_KEYBOARD_LED_SCROLLLOCK)
-		LEDMask |= LEDS_LED4;*/
-	/* Set the status LEDs to the current Keyboard LED status */
-	//LEDs_SetAllLEDs(LEDMask);
 }
 void Keyboard_HID_Task(void) {//Generates the next keyboard HID report for the host. Processes host LED status.
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;//Device must be connected and configured for the task to run
@@ -209,8 +197,7 @@ void Consumer_HID_Task(void) {
 			ConsumerReportData.ReportID = 2;
 			ConsumerReportData.Buttons1 = consumerButton[2];
 			ConsumerReportData.Buttons2 = 0;
-		}
-		else {
+		} else {
 			ConsumerReportData.ReportID = 1;
 			ConsumerReportData.Buttons1 = consumerButton[0];
 			ConsumerReportData.Buttons2 = consumerButton[1];

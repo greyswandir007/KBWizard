@@ -52,4 +52,4 @@ build-*
 *.sym
 *.lss
 LUFA
-
+.idea

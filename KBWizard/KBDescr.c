@@ -1,34 +1,4 @@
 #include "KBDescr.h"
-/*const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[] = {//Report descriptor for mouse HID class
-	HID_RI_USAGE_PAGE(8, 0x01), 			//Desktop
-	HID_RI_USAGE(8, 0x02), 					//Mouse class
-	HID_RI_COLLECTION(8, 0x01), 			//Application
-		HID_RI_USAGE(8, 0x01), 				//Pointer
-		HID_RI_COLLECTION(8, 0x00), 		//Physical device
-			HID_RI_USAGE_PAGE(8, 0x09), 	//Buttons
-			HID_RI_USAGE_MINIMUM(8, 0x01),	//
-			HID_RI_USAGE_MAXIMUM(8, 0x03),	//
-			HID_RI_LOGICAL_MINIMUM(8, 0x00),//
-			HID_RI_LOGICAL_MAXIMUM(8, 0x01),//
-			HID_RI_REPORT_COUNT(8, 0x03),	//Button count
-			HID_RI_REPORT_SIZE(8, 0x01),
-			HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_ABSOLUTE),
-			HID_RI_REPORT_COUNT(8, 0x01),
-			HID_RI_REPORT_SIZE(8, 0x05),
-			HID_RI_INPUT(8, HID_IOF_CONSTANT),
-			HID_RI_USAGE_PAGE(8, 0x01), 	//Desktop
-			HID_RI_USAGE(8, 0x30), 			//X
-			HID_RI_USAGE(8, 0x31), 			//Y
-			HID_RI_LOGICAL_MINIMUM(8, -128),	//Logical minimum -20
-			HID_RI_LOGICAL_MAXIMUM(8,  127),	//Logical maximum +20
-			HID_RI_PHYSICAL_MINIMUM(8, -128), //Physical minimum (resolution) -5
-			HID_RI_PHYSICAL_MAXIMUM(8,  127),	//Physical maximum (resolution) +5
-			HID_RI_REPORT_COUNT(8, 0x02),
-			HID_RI_REPORT_SIZE(8, 0x08),
-			HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_VARIABLE | HID_IOF_RELATIVE),
-		HID_RI_END_COLLECTION(0),
-	HID_RI_END_COLLECTION(0),
-};*/
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM MouseReport[128] = {
      0x05, 0x01,        // USAGE_PAGE (Generic Desktop)
      0x09, 0x02,        // USAGE (Mouse)
@@ -433,4 +403,3 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex
 	*DescriptorAddress = Address;
 	return Size;
 }
-
