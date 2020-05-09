@@ -1,34 +1,6 @@
 #ifndef KEYMAPCONSTANT
 #define KEYMAPCONSTANT
-
-#define KEYMAP_SIZE 40
-#define KEYMAP_READ_SIZE 10
-#define KEYMAP_COUNT 10
-#define MAIN_KEY_MAP 0
-#define MAIN_KEY_MOD 1
-#define FN_KEY_MAP 2
-#define FN_KEY_MOD 3
-
-#define NONHID_KEYBOARD_SC_MAIL			0xEC
-#define NONHID_MOUSE_LEFT_BUTTON		0xF5
-
-//0xA5-AF Undefined HID
-//0xDE 0xDF Undefined HID
-//0xF5-F7 Undefined HID
-//0xFC 0xFD 0xFE 0xFF
-
-//MyKeys
-//0xDE - Change Lang
-//0xDF - Change KeyMap
-//0xEC - Mail
-//0xF5 - Mouse LBtn
-//0xF6 - Mouse RBtn
-//0xF7 - MOuse MBtn
-//0xFC - WWW Favorite
-//0xFD - Wake
-
-//0xFF - Fn
-
+#include "keymapCommon.h"
 
 unsigned char EEMEM storedMap[KEYMAP_COUNT][4][KEYMAP_SIZE] = {
 	{{
@@ -63,14 +35,21 @@ unsigned char EEMEM storedMap[KEYMAP_COUNT][4][KEYMAP_SIZE] = {
 		HID_KEYBOARD_SC_APOSTROPHE_AND_QUOTE,
 		HID_KEYBOARD_SC_BACKSLASH_AND_PIPE,
 		//PORTE // 24
-		0xF5,  //Mouse LBTN
-		HID_KEYBOARD_SC_RIGHT_ALT,
-		0xFF, //Fn
-		HID_KEYBOARD_SC_ENTER,
 		HID_KEYBOARD_SC_SPACE,
-		0,0,0,
+		HID_KEYBOARD_SC_RIGHT_CONTROL,
+		HID_KEYBOARD_SC_RIGHT_SHIFT,
+        	HID_KEYBOARD_SC_RIGHT_GUI,
+		HID_KEYBOARD_SC_TAB,
+        	NONHID_FN_KEY,
+        	HID_KEYBOARD_SC_DELETE,
+        	HID_KEYBOARD_SC_INSERT,
 		//PORTF // 32
-		0,0,0,0, 0,0,0,0
+		NONHID_MOUSE_RIGHT_BUTTON,
+	        HID_KEYBOARD_SC_RIGHT_ALT,
+	        HID_KEYBOARD_SC_RIGHT_CONTROL,
+	        HID_KEYBOARD_SC_END,
+		// External
+		0,0,0,0
 	},
 	{
 		//PORTA // 0
@@ -116,14 +95,21 @@ unsigned char EEMEM storedMap[KEYMAP_COUNT][4][KEYMAP_SIZE] = {
 		HID_KEYBOARD_SC_PAGE_DOWN,
 		HID_KEYBOARD_SC_BACKSLASH_AND_PIPE,
 		//PORTE	 // 24
-		0xF6,  //Mouse RBTN
-		HID_KEYBOARD_SC_RIGHT_ALT,
-		0xFF, // Fn
-		0xFD, // Select keymap
-		0xFE, // Change lang
-		0,0,0,
+		NONHID_CHANGE_LANG,
+		NONHID_CHANGE_KEYMAP,
+		HID_KEYBOARD_SC_RIGHT_SHIFT,
+        	HID_KEYBOARD_SC_RIGHT_GUI,
+		HID_KEYBOARD_SC_TAB,
+        	NONHID_FN_KEY,
+        	HID_KEYBOARD_SC_DELETE,
+        	HID_KEYBOARD_SC_INSERT,
 		//PORTF // 32
-		0,0,0,0, 0,0,0,0
+		NONHID_MOUSE_LEFT_BUTTON,
+		NONHID_BLOCK_KEYBOARD,
+	        NONHID_MOUSE_MIDDLE_BUTTON,
+	        HID_KEYBOARD_SC_HOME,
+		//
+		0,0,0,0
 	},
 	{
 		//PORTA // 0

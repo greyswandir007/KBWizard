@@ -2,8 +2,8 @@
 
 #define FNOUTPORT PORTB
 #define FNPORTPIN PINB
-#define FNOUTPIN 6
-#define FNINPIN 7
+#define FNOUTPIN 5
+#define FNINPIN 0
 #define MOUSEOUTPIN 2
 #define MOUSEINPIN 3
 #define MOUSESSPIN 4

@@ -5,7 +5,7 @@
 #include "USBCommand.h"
 #include "KBWMouse.h"
 #include "KBWSettings.h"
-#ifdef LEFT_PARK_KEY
+#ifdef LEFT_PART_KEY
 #include "keymapLeft.h"
 #define KEYBOARD_STATUS 0x4C
 #else
@@ -40,6 +40,8 @@ uint8_t fnPressed = 0;
 uint8_t consumerButton[3] = {0, 0, 0};
 
 uint8_t hasFn = 0;
+uint8_t isBlocked = 0;
+uint8_t isBlockKeyPressed = 0;
 uint8_t fnPort[8] = {0,0,0,0,0,0,0,0}; // 0 - PORTA, 1 - PORTC, 2 - PORTD, 3 - PORTE, 4 - PORTF,
 			  // PORTF&0x80 - external fn
 			  // PORTF&0x40 - should set for external fn
@@ -50,6 +52,7 @@ uint8_t consumer_SC_Codes[] = {0x08, 0x10, 0x20, 0x40, 0x80, 0x02, 0x04, 0x01, 0
 uint8_t consumer_SC_Btn[]   = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x02, 0x00, 0x01, 0x01, 0x01, 0x02};
 
 void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
+	uint8_t blockKeyPressed = 0;
 	if ((btn)&&(countKeyPressed < 20)) {
 		int j = 0;
 		for(int k = 0; k < 5; k++) {
@@ -87,6 +90,10 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 						keyPressModifier |= mod[j];
 						countKeyPressed++;
 					}
+                                        if (map[j] == NONHID_BLOCK_KEYBOARD) {
+						blockKeyPressed = 1;
+						isBlockKeyPressed = 1;
+					}
 					kpStatPress[j] = 1;
 				}
 				else if (kpStatPress[j]) {
@@ -103,6 +110,9 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 				j++;
 			}
 		}
+	}
+	if (isBlockKeyPressed && !blockKeyPressed) {
+		isBlocked ^= 1;
 	}
 }
 
@@ -141,9 +151,11 @@ void scanKeyPressed() {
 	consumerButton[1] = 0;
 	consumerButton[2] = 0;
 	uint8_t btn[5];
-	btn[0] = PINA; btn[1] = PINC; btn[2] = PIND; btn[3] = PINE; btn[4] = PINF;
+	btn[0] = PINA; btn[1] = PINC; btn[2] = PINE; btn[3] = PINF;
+        btn[4] = PIND;
+        btn[4] = btn[4] & 0x13 | ((btn[4] & 0xC0) << 4) | (PINB & 0xE0);
 	//btnB = (btnB >> 4) | (btnD & 0xC) | ((btnD & 0x3)<<4);
-	for (int i = 0; i < 5; i++){
+	for (int i = 0; i < 5; i++) {
 		btn [i] = ~btn[i];
 		pressedButtons [i] = btn[i];
 	}
@@ -174,8 +186,10 @@ void Keyboard_ProcessLEDReport(const uint8_t LEDStatus) {// Processes a given Ke
 void Keyboard_HID_Task(void) {//Generates the next keyboard HID report for the host. Processes host LED status.
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;//Device must be connected and configured for the task to run
 
-	KeyboardReportData.Modifier = keyPressModifier | getModifierForMouse();
-	for (int i = 0; (i < 6) && (i < countKeyPressed); i++) KeyboardReportData.KeyCode[i] = keyPressed[i];
+	if (!isBlocked) {
+		KeyboardReportData.Modifier = keyPressModifier | getModifierForMouse();
+		for (int i = 0; (i < 6) && (i < countKeyPressed); i++) KeyboardReportData.KeyCode[i] = keyPressed[i];
+        }
 
 	Endpoint_SelectEndpoint(KEYBOARD_IN_EPADDR); //Select the Keyboard Report Endpoint
 	if (Endpoint_IsReadWriteAllowed()) {//Check if Keyboard Endpoint Ready for Read/Write
@@ -190,17 +204,18 @@ void Keyboard_HID_Task(void) {//Generates the next keyboard HID report for the h
 	}
 }
 void Consumer_HID_Task(void) {
-	if (consumerButton[2] != 0) {
-		ConsumerReportData.ReportID = 2;
-		ConsumerReportData.Buttons1 = consumerButton[2];
-		ConsumerReportData.Buttons2 = 0;
+        if (!isBlocked) {
+		if (consumerButton[2] != 0) {
+			ConsumerReportData.ReportID = 2;
+			ConsumerReportData.Buttons1 = consumerButton[2];
+			ConsumerReportData.Buttons2 = 0;
+		}
+		else {
+			ConsumerReportData.ReportID = 1;
+			ConsumerReportData.Buttons1 = consumerButton[0];
+			ConsumerReportData.Buttons2 = consumerButton[1];
+		}
 	}
-	else {
-		ConsumerReportData.ReportID = 1;
-		ConsumerReportData.Buttons1 = consumerButton[0];
-		ConsumerReportData.Buttons2 = consumerButton[1];
-	}
-
 	Endpoint_SelectEndpoint(CONSUMER_IN_EPADDR); //Select the Keyboard Report Endpoint
 	if (Endpoint_IsReadWriteAllowed()) {//Check if Keyboard Endpoint Ready for Read/Write
 		Endpoint_Write_Stream_LE(&ConsumerReportData, sizeof(ConsumerReportData), NULL); //Write Keyboard Report Data

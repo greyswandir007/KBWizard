@@ -345,7 +345,11 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor = {//Device
 };
 const USB_Descriptor_String_t PROGMEM LanguageString = USB_STRING_DESCRIPTOR_ARRAY(LANGUAGE_ID_ENG);//Language ID
 const USB_Descriptor_String_t PROGMEM ManufacturerString = USB_STRING_DESCRIPTOR(L"Wizard Inc.");//Manufacturer String
-const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"KBWizard");//Product string
+#ifdef LEFT_PART_KEY
+const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"KBWizardLeft");//Product string
+#else
+const USB_Descriptor_String_t PROGMEM ProductString = USB_STRING_DESCRIPTOR(L"KBWizardRight");//Product string
+#endif
 const USB_Descriptor_String_t PROGMEM SerialString = USB_STRING_DESCRIPTOR(L"00000001");//Serial string
 /** This function is called by the library when in device mode, and must be overridden (see "USB Descriptors" documentation)
  *  by the application code so that the address and size of a requested descriptor can be given to the USB library. When

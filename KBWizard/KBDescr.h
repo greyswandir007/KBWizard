@@ -1,5 +1,8 @@
 #ifndef _DESCRIPTORS_H_
 #define _DESCRIPTORS_H_
+
+#define LEFT_PART_KEY
+
 #include <LUFA/Drivers/USB/USB.h>
 #include <avr/pgmspace.h>
 typedef struct {

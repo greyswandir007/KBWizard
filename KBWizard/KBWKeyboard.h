@@ -1,5 +1,6 @@
 #ifndef KBWKEYBOARD_H_INCLUDED
 #define KBWKEYBOARD_H_INCLUDED
+
 #include <inttypes.h>
 
 void scanKeyPressed(void);
