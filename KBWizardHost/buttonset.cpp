@@ -5,10 +5,6 @@ ButtonSet::ButtonSet(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ButtonSet)
 {
-    for (int j = 0; j < 4; j++) {
-        for (int i = 0; i < 40; i++) curKeymap[j][i] = 0;
-    }
-    for (int i = 0; i < 40; i++) keyPressStat[i] = 0;
     buttonSize = 50;
     pointPos << QPoint(290,20) << QPoint(290,70) << QPoint(290,120) << QPoint(290,170);
     pointPos << QPoint(240,20) << QPoint(240,70) << QPoint(240,120) << QPoint(240,170);
@@ -28,7 +24,6 @@ ButtonSet::ButtonSet(QWidget *parent) :
         btn->setGeometry(pointPos.at(i).x(),pointPos.at(i).y(), buttonSize, buttonSize);
         btn->setText(QString("/%1\\").arg(i+1));
         keyList.append(btn);
-        connect(btn,SIGNAL(clicked()),this,SLOT(keyClicked()));
     }
 }
 
@@ -62,43 +57,4 @@ void ButtonSet::setRightSide(bool side)
             }
         }
     }
-}
-
-void ButtonSet::setKBWDevice(KBWizardHID *dev)
-{
-    kbDevice = dev;
-}
-
-KBWizardHID *ButtonSet::KBWDevice()
-{
-    return kbDevice;
-}
-
-void ButtonSet::setCurrentKeymap(uint8_t **keymap)
-{
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 40; j++)
-            curKeymap[i][j] = keymap[i][j];
-    }
-}
-
-uint8_t **ButtonSet::currentKeymap()
-{
-    return (uint8_t **)curKeymap;
-}
-
-void ButtonSet::setKeyPressStatistic(uint32_t *stat)
-{
-    for (int i = 0; i < 40; i++)
-        keyPressStat[i] = stat[i];
-}
-
-uint32_t *ButtonSet::keyPressStatistic()
-{
-    return keyPressStat;
-}
-
-void ButtonSet::keyClicked()
-{
-
 }

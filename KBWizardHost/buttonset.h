@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QPushButton>
-#include "kbwizardhid.h"
 
 namespace Ui {
 class ButtonSet;
@@ -19,17 +18,7 @@ public:
     QList<QPushButton*> keySetList();
     bool isRightSide();
     void setRightSide(bool side);
-    void setKBWDevice(KBWizardHID *dev);
-    KBWizardHID *KBWDevice();
-    void setCurrentKeymap(uint8_t **keymap);
-    uint8_t **currentKeymap();
-    void setKeyPressStatistic(uint32_t *stat);
-    uint32_t *keyPressStatistic();
-
     Q_PROPERTY(bool rightSide READ isRightSide WRITE setRightSide)
-
-public slots:
-    void keyClicked();
 
 private:
     Ui::ButtonSet *ui;
@@ -37,9 +26,6 @@ private:
     QList<QPoint> pointPos;
     int buttonSize;
     bool rightSideMap = false;
-    KBWizardHID *kbDevice = 0;
-    uint8_t  curKeymap[4][40];
-    uint32_t keyPressStat[40];
 };
 
 #endif // BUTTONSET_H

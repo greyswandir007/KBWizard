@@ -7,11 +7,15 @@
 #include <QPushButton>
 
 #include "kbwizardhid.h"
-#include "keycategoryset.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+struct keyCategories {
+    QString name;
+    QList<int> indexes;
+};
 
 class MainWindow : public QMainWindow
 {
@@ -63,7 +67,7 @@ private:
     uint8_t  leftKeymap[4][40]; // keyMap
     uint32_t rightKeyStat[40];
     uint32_t leftKeyStat[40];
-    KeyCategorySet keyCat;
+    QList<keyCategories> keyCat;
     QList<int> keysToUpdateLeft;
     QList<int> keysToUpdateRight;
 };
