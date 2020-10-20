@@ -8,7 +8,7 @@
 #include "KBWMouse.h"
 #include "KBWKeyboard.h"
 
-#ifdef LEFT_PARK_KEY
+#ifdef LEFT_PART_KEY
 #define KEYBOARD_STATUS 0x4C
 #else
 #define KEYBOARD_STATUS 0x52
@@ -74,44 +74,29 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 				UpdateStatus();
 			}
 			else {
-				sendData[0] = 0x42;
-				sendData[1] = 0xFF;
-				sendData[2] = 0xFF;
-				sendData[3] = 0xFF;
-				dataReady = 1;
+                busyResponse();
 			}
 			break;
 		case KBW_GET_EEPROM_KB_KEY://4 byte at time
-			if ((DataArray[1] < 10) && (DataArray[2] < 4) && (DataArray[3] < 37)) {
+			if (DataArray[1] < 10 && DataArray[2] < 4 && DataArray[3] < 37) {
 				if (startEERead(128 + DataArray[1] * 160 + DataArray[2] * 40 + DataArray[3], 4, READ_KEYSET_PART)) {
 					sendData[0] = 0x52;
 					sendData[1] = DataArray[1];
 					sendData[2] = DataArray[2];
 					sendData[3] = DataArray[3];
+				} else {
+                    busyResponse();
 				}
-				else {
-					sendData[0] = 0x42;
-					sendData[1] = 0xFF;
-					sendData[2] = 0xFF;
-					sendData[3] = 0xFF;
-					dataReady = 1;
-				}
-			}
-			else {
+			} else {
 				sendData[0] = 0x45;
 				dataReady = 1;
 			}
 			break;
 		case KBW_SET_EEPROM_KB_KEY://4 byte at time
 			if (waitForWrite) {
-				sendData[0] = 0x42;
-				sendData[1] = 0xFF;
-				sendData[2] = 0xFF;
-				sendData[3] = 0xFF;
-				dataReady = 1;
-			}
-			else if ((DataArray[1] < 10)&&(DataArray[2] < 4)&&(DataArray[3]<40)) {
-				if (startEEWrite(128+DataArray[1]*160+DataArray[2]*40+DataArray[3], 4,&DataArray[4])) {
+                busyResponse();
+			} else if (DataArray[1] < 10 && DataArray[2] < 4 && DataArray[3] < 40) {
+				if (startEEWrite(128 + DataArray[1] * 160 + DataArray[2] * 40 + DataArray[3], 4,&DataArray[4])) {
 					waitForWrite = 1;
 					sendData[0] = 0x57;
 					sendData[1] = DataArray[1];
@@ -121,16 +106,10 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 					sendData[5] = DataArray[5];
 					sendData[6] = DataArray[6];
 					sendData[7] = DataArray[7];
+				} else {
+                    busyResponse();
 				}
-				else {
-					sendData[0] = 0x42;
-					sendData[1] = 0xFF;
-					sendData[2] = 0xFF;
-					sendData[3] = 0xFF;
-					dataReady = 1;
-				}
-			}
-			else {
+			} else {
 				sendData[0] = 0x45;
 				dataReady = 1;
 			}
@@ -144,19 +123,11 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 						UpdateStatus();
 					}
 					else {
-						sendData[0] = 0x42;
-						sendData[1] = 0xFF;
-						sendData[2] = 0xFF;
-						sendData[3] = 0xFF;
-						dataReady = 1;
+                        busyResponse();
 					}
 				}
 				else {
-					sendData[0] = 0x42;
-					sendData[1] = 0xFF;
-					sendData[2] = 0xFF;
-					sendData[3] = 0xFF;
-					dataReady = 1;
+                    busyResponse();
 				}
 			}
 			break;
@@ -166,11 +137,7 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 				UpdateStatus();
 			}
 			else {
-				sendData[0] = 0x42;
-				sendData[1] = 0xFF;
-				sendData[2] = 0xFF;
-				sendData[3] = 0xFF;
-				dataReady = 1;
+                busyResponse();
 			}
 			break;
 		case KBW_SET_SENSOR_WORK_TYPE:
@@ -181,11 +148,7 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 				dataReady = 1;
 			}
 			else {
-				sendData[0] = 0x42;
-				sendData[1] = 0xFF;
-				sendData[2] = 0xFF;
-				sendData[3] = 0xFF;
-				dataReady = 1;
+                busyResponse();
 			}
 			break;
 		case KBW_GET_SENSOR_WORK_TYPE:
@@ -201,11 +164,7 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 					sendData[2] = 0;
 					sendData[3] = 0;
 				} else {
-					sendData[0] = 0x42;
-					sendData[1] = 0xFF;
-					sendData[2] = 0xFF;
-					sendData[3] = 0xFF;
-					dataReady = 1;
+                    busyResponse();
 				}
 			} else {
 				sendData[0] = 0x45;
@@ -214,13 +173,8 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 			break;
 		case KBW_UPDATE_EEPROM_KEY:
 			if (waitForWrite) {
-				sendData[0] = 0x42;
-				sendData[1] = 0xFF;
-				sendData[2] = 0xFF;
-				sendData[3] = 0xFF;
-				dataReady = 1;
-			}
-			else if ((DataArray[1] < 10)&&(DataArray[2] < 4)&&(DataArray[3]<40)) {
+                busyResponse();
+			} else if (DataArray[1] < 10 && DataArray[2] < 4 && DataArray[3] < 40) {
 				if (startEEWrite(128+DataArray[1]*160+DataArray[2]*40+DataArray[3], 1,&DataArray[4])) {
 					waitForWrite = 1;
 					startEEWrite(128+DataArray[1]*160+DataArray[2]*40+40+DataArray[3], 1,&DataArray[5]);
@@ -237,11 +191,7 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 						else updateFnKey(DataArray[4], DataArray[5], DataArray[3]);
 					}
 				} else {
-					sendData[0] = 0x42;
-					sendData[1] = 0xFF;
-					sendData[2] = 0xFF;
-					sendData[3] = 0xFF;
-					dataReady = 1;
+                    busyResponse();
 				}
 			} else {
 				sendData[0] = 0x45;
@@ -253,20 +203,62 @@ void ProcessGenericHIDReport(uint8_t* DataArray) {
 			dataReady = 1;
 			break;
 
+		case KBW_GET_MACROS_DATA:
+            if (DataArray[1] >= 10 || DataArray[2] >= 25) {
+                sendData[0] = 0x45;
+                dataReady = 1;
+            } else if (startEERead(1888 + DataArray[1] * 150 + DataArray[2] * 2, 6, READ_MACROS)) {
+                sendData[0] = 0x30 + DataArray[1];
+                sendData[1] = DataArray[2];
+            } else {
+                busyResponse();
+            }
+		    break;
+
+		case KBW_SET_MACROS_DATA:
+            if (waitForWrite) {
+                busyResponse();
+            } else if (DataArray[1] < 10 && DataArray[2] < 50) {
+                if (startEEWrite(1888 + DataArray[1] * 150 + DataArray[2] * 2, 3, &DataArray[3])) {
+                    waitForWrite = 1;
+                    sendData[0] = 0x4D;
+                    sendData[1] = DataArray[1];
+                    sendData[2] = DataArray[2];
+                    sendData[3] = DataArray[3];
+                    sendData[4] = DataArray[4];
+                    sendData[5] = DataArray[5];
+                    sendData[6] = 0;
+                    sendData[7] = 0;
+                } else {
+                    busyResponse();
+                }
+            } else {
+                sendData[0] = 0x45;
+                dataReady = 1;
+            }
+		    break;
+
 		case KBW_READ_RESERVED:
 			eeprom_read_block(&sendData[3], &(ReservedEEMEM[DataArray[1]]), 1);
 			sendData[4] = readEEKBKey(DataArray[2], DataArray[3], DataArray[4]);
-			//uint32_t v = ReadKPStatEEMEM(DataArray[1]);
 			sendData[0] = 0x51;
 			sendData[1] = DataArray[1];
 			sendData[2] = DataArray[2];
-			//sendData[3] = v & 0xFF;
 			dataReady = 1;
 			break;
 		default: break;
 		}
 	}
 }
+
+void busyResponse() {
+    sendData[0] = 0x42;
+    sendData[1] = 0xFF;
+    sendData[2] = 0xFF;
+    sendData[3] = 0xFF;
+    dataReady = 1;
+}
+
 void CreateGenericHIDReport(uint8_t* DataArray) {
 	if (dataReady) {
 		for (int i = 0; i < HID_GENERIC_EPSIZE; i++) {
@@ -298,7 +290,6 @@ void HID_Task(void) {
 		}
 	}
 }
-
 
 void UpdateStatus(void) {
 	sendData[0] = 0x4B;//K
@@ -361,8 +352,7 @@ void readEEPROMData (void) {
 			bytesToReadLeft--;
 			currentReadIndex++;
 		}
-	}
-	else if (EEPROMReadTask) {
+	} else if (EEPROMReadTask) {
 		switch (EEPROMReadTask) {
 		case READ_INITIAL_VALUES:
 			EEPROMReadTask = 0;
@@ -408,6 +398,14 @@ void readEEPROMData (void) {
 			EEPROMReadTask = 0;
 			updateKeystat((uint32_t*)readedArray);
 			break;
+		case READ_MACROS:
+            sendData[2] = readedArray[0];
+            sendData[3] = readedArray[1];
+            sendData[4] = readedArray[2];
+            sendData[5] = readedArray[3];
+            sendData[6] = readedArray[4];
+            sendData[7] = readedArray[5];
+		    break;
 		default: break;
 		}
 	}

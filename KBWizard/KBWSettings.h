@@ -8,6 +8,7 @@
 #define READ_KEYSET_PART		3
 #define READ_KEYSET_STATISTIC	4
 #define READ_KEYSET_STAT_INIT   5
+#define READ_MACROS		        6
 
 void initCommon(void);
 

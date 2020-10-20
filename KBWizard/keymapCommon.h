@@ -4,6 +4,8 @@
 #define KEYMAP_SIZE 40
 #define KEYMAP_READ_SIZE 10
 #define KEYMAP_COUNT 10
+#define MACROS_MAX_SIZE 50
+#define MACROS_MAX_COUNT 10
 #define MAIN_KEY_MAP 0
 #define MAIN_KEY_MOD 1
 #define FN_KEY_MAP 2

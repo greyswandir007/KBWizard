@@ -20,7 +20,7 @@ typedef struct{
 	uint8_t ReportID; /**< Button mask for currently pressed buttons in the mouse. */
 	int8_t  Buttons1; /**< Current delta X movement of the mouse. */
 	int8_t  Buttons2; /**< Current delta Y movement on the mouse. */
-}ATTR_PACKED USB_ConsumerReport_Data;
+} ATTR_PACKED USB_ConsumerReport_Data;
 static USB_KeyboardReport_Data_t KeyboardReportData; /** Global structure to hold the current keyboard interface HID report, for transmission to the host */
 static USB_ConsumerReport_Data ConsumerReportData;
 //Keyboard Global variables
@@ -53,14 +53,14 @@ uint8_t consumer_SC_Btn[]   = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0
 
 void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 	uint8_t blockKeyPressed = 0;
-	if ((btn)&&(countKeyPressed < 20)) {
+	if (btn && countKeyPressed < 20) {
 		int j = 0;
 		for(int k = 0; k < 5; k++) {
 			for (int i = 0; i < 8; i++) {
 				if (btn[k] & _BV(i)) {
-					if ((map[j] >= 0xF5)&&(map[j] <= 0xF7)) mouseButton |= 1<<(map[j]-0xF5);
-					if ((map[j] >= 0xE0)&&(map[j] <= 0xE7)) keyPressModifier |= 1 << (map[j] - 0xE0);
-					if ((map[j] >= 0xE8)&&(map[j] <= 0xFD)) {
+					if (map[j] >= 0xF5 && map[j] <= 0xF7) mouseButton |= 1 << (map[j] - 0xF5);
+					if (map[j] >= 0xE0 && map[j] <= 0xE7) keyPressModifier |= 1 << (map[j] - 0xE0);
+					if (map[j] >= 0xE8 && map[j] <= 0xFD) {
 						uint8_t cc = map[j]-0xE8;
 						consumerButton[consumer_SC_Btn[cc]] |= consumer_SC_Codes[cc];
 						//01//Vol mute;			HID_KEYBOARD_SC_MEDIA_MUTE                        0xEF
@@ -84,7 +84,7 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 						//01//Sleep				HID_KEYBOARD_SC_MEDIA_SLEEP                       0xF8
 						//02//Wake				0xFD
 					}
-					if (map[j]&&(countKeyPressed < 20)&&(map[j] < 0xE8)&&((map[j]<245)||(map[j]>247))) {
+					if (map[j] && countKeyPressed < 20 && map[j] < 0xE8) {
 						keyPressed[countKeyPressed] = map[j];
 						keyPressModifier |= mod[j];
 						countKeyPressed++;
@@ -102,7 +102,7 @@ void fillPortKey(uint8_t *btn, uint8_t *map, uint8_t *mod) {
 				if (kpStatImidiate[j] >= 10) {
 					if (startEEWrite(128 + 1600 + j * 4, 4, (uint8_t*)&(kpStat[j]))) kpStatImidiate[j] = 0;
 				}
-				if ((emptyCycles >= 8000)&&(kpStatImidiate[j] > 0)) {
+				if (emptyCycles >= 8000 && kpStatImidiate[j] > 0) {
 					if (startEEWrite(128 + 1600 + j * 4, 4, (uint8_t*)&(kpStat[j]))) kpStatImidiate[j] = 0;
 				}
 				j++;
@@ -142,6 +142,7 @@ void getKBStatus(uint8_t* dataArray) {
 }
 
 void scanKeyPressed() {
+    mouseButton = 0;
 	fnPressed = 0;
 	countKeyPressed = 0;
 	keyPressModifier = 0;
@@ -150,16 +151,17 @@ void scanKeyPressed() {
 	consumerButton[2] = 0;
 	uint8_t btn[5];
 	btn[0] = PINA; btn[1] = PINC; btn[2] = PINE; btn[3] = PINF;
-        btn[4] = PIND;
-        btn[4] = btn[4] & 0x13 | ((btn[4] & 0xC0) << 4) | (PINB & 0xE0);
+	btn[4] = PIND;
+	btn[4] = btn[4] & 0x13 | ((btn[4] & 0xC0) >> 4) | (PINB & 0xF0);
 	for (int i = 0; i < 5; i++) {
 		btn [i] = ~btn[i];
 		pressedButtons [i] = btn[i];
 	}
-	for(int i = 0; i < hasFn; i++)
-		if ((fnPort[i] >= 0) && (fnPort[i] <= 5)&&(btn[fnPort[i]] & _BV(fnPin[i]))) {FNOUTPORT &= ~_BV(FNOUTPIN); fnPressed = 1;}
-	if (!fnPressed) FNOUTPORT |= _BV(FNOUTPIN);
-	if (!(FNPORTPIN & _BV(FNINPIN))) fnPressed = 1;
+	for(int i = 0; i < hasFn; i++) {
+        if (fnPort[i] >= 0 && fnPort[i] <= 5 && (btn[fnPort[i]] & _BV(fnPin[i]) == 0)) {
+            fnPressed = 1;
+        }
+    }
 	unsigned char *map = kmMain, *mod = kmMMod;
 	if (fnPressed) {map = kmFn; mod = kmFMod;}
 	fillPortKey (btn, map, mod);
@@ -171,13 +173,14 @@ void scanKeyPressed() {
 
 void Keyboard_ProcessLEDReport(const uint8_t LEDStatus) {// Processes a given Keyboard LED report from the host, and sets the board LEDs to match.
 }
+
 void Keyboard_HID_Task(void) {//Generates the next keyboard HID report for the host. Processes host LED status.
 	if (USB_DeviceState != DEVICE_STATE_Configured) return;//Device must be connected and configured for the task to run
 
 	if (!isBlocked) {
 		KeyboardReportData.Modifier = keyPressModifier | getModifierForMouse();
 		for (int i = 0; (i < 6) && (i < countKeyPressed); i++) KeyboardReportData.KeyCode[i] = keyPressed[i];
-        }
+	}
 
 	Endpoint_SelectEndpoint(KEYBOARD_IN_EPADDR); //Select the Keyboard Report Endpoint
 	if (Endpoint_IsReadWriteAllowed()) {//Check if Keyboard Endpoint Ready for Read/Write
@@ -191,8 +194,9 @@ void Keyboard_HID_Task(void) {//Generates the next keyboard HID report for the h
 		Endpoint_ClearOUT(); //Handshake the OUT Endpoint - clear endpoint and ready for next report */
 	}
 }
+
 void Consumer_HID_Task(void) {
-        if (!isBlocked) {
+    if (!isBlocked) {
 		if (consumerButton[2] != 0) {
 			ConsumerReportData.ReportID = 2;
 			ConsumerReportData.Buttons1 = consumerButton[2];
@@ -237,11 +241,13 @@ void updateKeymap(unsigned char *map, int part) {
 		updateFNKeys ();
 	}
 }
+
 void updateKeystat(uint32_t *stat) {
 	for (int i = 0; i < KEYMAP_SIZE; i++) {
 		kpStat[i] = stat[i];
 	}
 }
+
 void updateKey(unsigned char key, unsigned char mod, unsigned char fkey, unsigned char fmod, int index) {
 	char needUpd = 0;
 	if ((kmMain[index] == 0xFF)||(key == 0xFF)) needUpd = 1;
@@ -251,6 +257,7 @@ void updateKey(unsigned char key, unsigned char mod, unsigned char fkey, unsigne
 	kmFMod[index] = fmod;
 	if (needUpd) updateFNKeys();
 }
+
 void updateNmKey(unsigned char key, unsigned char mod, int index) {
 	char needUpd = 0;
 	if ((kmMain[index] == 0xFF)||(key == 0xFF)) needUpd = 1;
@@ -258,14 +265,16 @@ void updateNmKey(unsigned char key, unsigned char mod, int index) {
 	kmMMod[index] = mod;
 	if (needUpd) updateFNKeys();
 }
+
 void updateFnKey(unsigned char key, unsigned char mod, int index) {
 	kmFn[index] = key;
 	kmFMod[index] = mod;
 }
 
 uint8_t readEEKBKey(uint8_t ks, uint8_t km, uint8_t key) {
-    uint8_t val1, val2;
+    uint8_t val1, val2, val3;
     eeprom_read_block(&val1, &(storedMap[ks][km][key]), 1);
     eeprom_read_block(&val2, &(keyPressStatistic[key]), 1);
-    return val1 | val2;
+    eeprom_read_block(&val3, &(macrosData[ks][km][key]), 1);
+    return val1 | val2 | val3;
 }

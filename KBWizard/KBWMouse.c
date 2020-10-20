@@ -4,7 +4,7 @@
 #include "USBCommand.h"
 #include "KBWSettings.h"
 #include "KBWKeyboard.h"
-#define MOUSESSPIN 4
+#define MOUSESSPIN 0
 typedef struct {
 	uint8_t Button; /**< Button mask for currently pressed buttons in the mouse. */
 	int8_t  X; /**< Current delta X movement of the mouse. */
@@ -28,7 +28,7 @@ void initMouse(void) {
 	char rev = ReadSensorValue(0x01);
 	mouseDeviceId = dev;
 	if (dev == 0x12) {
-		if ((rev >= 0x01) && (rev <= 0x08)) {
+		if (rev >= 0x01 && rev <= 0x08) {
 			sensorAttached = 1;
 		}
 	}

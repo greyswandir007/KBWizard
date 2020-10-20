@@ -43,7 +43,7 @@ void SetupHardware(void) {//Configures the board hardware and chip peripherals f
 	DDRE = 0; PORTE = 0xFF;
 	DDRF = 0; PORTF = 0xFF;
 
-	DDRB = 0b00110111 | _BV(FNOUTPIN); PORTB = _BV(FNINPIN) | _BV(FNOUTPIN) | _BV(MOUSESSPIN)  | _BV(MOUSERESPIN) | _BV(MOUSEOUTPIN) | _BV(MOUSEINPIN) |0b11;
+	DDRB = 0b00000111 | _BV(FNOUTPIN); PORTB = 0xFF;
 	USB_Init();
 }
 void EVENT_USB_Device_Connect(void) { //On connect
